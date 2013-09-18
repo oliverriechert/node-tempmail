@@ -1,0 +1,21 @@
+{
+  "name": "tempmail",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./index.js",
+  "bin": {
+    "tempmail": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "trev@trev.webfactional.com:/home/trev/repos/tempmail.git"
+  },
+  "author": "Trevor Senior <trevor@tsenior.com> (http://tsenior.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "q": "~0.9.7",
+    "request": "~2.27.0",
+    "cheerio": "~0.12.2",
+    "sqlite3": "~2.1.17"
+  }
+}

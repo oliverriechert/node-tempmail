@@ -1,5 +1,5 @@
-var sqlite3 = require('sqlite3').verbose(),
-	when = require('when');
+var sqlite3 = require('sqlite3').verbose()
+	, when = require('when');
 
 module.exports = sqlite3;
 

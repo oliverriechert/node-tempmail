@@ -1,8 +1,8 @@
-var TempEmail = require('../TempEmail'),
-	request = require('../promise/request'),
-	cheerio = require('cheerio'),
-	when = require('when'),
-	url = require('url');
+var TempEmail = require('../TempEmail')
+	, request = require('../promise/request')
+	, cheerio = require('cheerio')
+	, when = require('when')
+	, url = require('url');
 
 exports.newTempEmail = function() {
 	var reqOptions = {

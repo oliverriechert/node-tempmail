@@ -1,5 +1,5 @@
-var request = require('request'),
-	when = require('when');
+var request = require('request')
+	, when = require('when');
 
 module.exports = request;
 

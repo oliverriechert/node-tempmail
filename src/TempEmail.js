@@ -1,6 +1,6 @@
-var sqlite3 = require('./promise/sqlite3'),
-	when = require('when'),
-	sequence = require('when/sequence');
+var sqlite3 = require('./promise/sqlite3')
+	, when = require('when')
+	, sequence = require('when/sequence');
 
 var TempEmail = function(website, address, cookies) {
 	this.website = website;

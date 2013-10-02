@@ -19,14 +19,14 @@ require('main')
 	if (!emailAddress) {
 		// create a new email
 		provider.newTempEmail(provider).then(function(tempEmail) {
-			exit(null, tempEmail.getAddress());
+			exit(tempEmail.getAddress());
 		}).otherwise(function(error) {
 			exit(1, error);
 		});
 	} else {
 		// fetch the inbox
 		provider.readEmailAddress(emailAddress).then(function(inbox) {
-			exit(null, inbox);
+			exit(inbox);
 		}).otherwise(function(error) {
 			exit(1, error);
 		});

@@ -13,9 +13,9 @@
   "author": "Trevor Senior <trevor@tsenior.com> (http://tsenior.com/)",
   "license": "MIT",
   "dependencies": {
-    "q": "~0.9.7",
     "request": "~2.27.0",
     "cheerio": "~0.12.2",
-    "sqlite3": "~2.1.17"
+    "sqlite3": "~2.1.17",
+    "when": "~2.4.0"
   }
 }

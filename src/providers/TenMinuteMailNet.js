@@ -1,7 +1,7 @@
 var TempEmail = require('../TempEmail'),
 	request = require('../promise/request'),
 	cheerio = require('cheerio'),
-	Q = require('q'),
+	when = require('when'),
 	url = require('url');
 
 exports.newTempEmail = function() {
@@ -18,9 +18,7 @@ exports.newTempEmail = function() {
 		var tempEmail = new TempEmail('10minutemail.net', emailAddress, cookies);
 
 		return tempEmail.persist().then(function() {
-			return Q.fcall(function() {
-				return tempEmail;
-			});
+			return when.resolve(tempEmail);
 		});
 	});
 };
@@ -34,14 +32,12 @@ var getEmailContent = function(reqOptions) {
 			return $(element).text();
 		});
 
-		return Q.fcall(function() {
-			return {
-				from: headerInfo[1],
-				to: headerInfo[3],
-				subject: headerInfo[5],
-				date: headerInfo[7],
-				content: content
-			};
+		return when.resolve({
+			from: headerInfo[1],
+			to: headerInfo[3],
+			subject: headerInfo[5],
+			date: headerInfo[7],
+			content: content
 		});
 	});
 };
@@ -63,7 +59,7 @@ exports.readTempEmail = function(tempEmail) {
 		var emailLinks = $('a').map(function(index, element) {
 			return $(element).attr('href');
 		});
-		return Q.all(emailLinks.map(function(link) {
+		return when.all(emailLinks.map(function(link) {
 			return getEmailContent({
 				url: 'http://10minutemail.net/en/' + link,
 				jar: jar
@@ -71,7 +67,6 @@ exports.readTempEmail = function(tempEmail) {
 		}));
 	});
 };
-
 
 exports.readEmailAddress = function(emailAddress) {
 	return TempEmail.load(emailAddress).then(function(tempEmail) {

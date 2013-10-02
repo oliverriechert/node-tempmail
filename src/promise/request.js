@@ -1,16 +1,12 @@
 var request = require('request'),
-	Q = require('q');
+	when = require('when');
 
 module.exports = request;
 
 module.exports.request_p = function(optionsOrUrl) {
-	var defer = Q.defer();
+	var defer = when.defer();
 	request(optionsOrUrl, function(error, response, body) {
-		if (error) {
-			defer.reject(error);
-		} else {
-			defer.resolve(response);
-		}
+		return error ? defer.reject(error) : defer.resolve(response);
 	});
 	return defer.promise;
 };

@@ -1,5 +1,6 @@
 var sqlite3 = require('./promise/sqlite3'),
-	Q = require('q');
+	when = require('when'),
+	sequence = require('when/sequence');
 
 var TempEmail = function(website, address, cookies) {
 	this.website = website;
@@ -20,48 +21,44 @@ TempEmail.prototype.persist = function() {
 				'address text primary key,',
 				'website text,',
 				'cookiesJson text',
-			')'
-		].join('\n');
+			')'].join('\n');
 
-		var insertSql = 'insert into email values (' +
-		 	'$address,' +
-		 	'$website,' +
-		 	'$cookiesJson' +
-		 ')';
+		var insertSql= [
+			'insert into email values (',
+			 	'$address,',
+			 	'$website,',
+			 	'$cookiesJson',
+			')'].join(' ');
 
-		return sqlite3.run_p(db, createSql)
-		.then(function() {
-			return sqlite3.run_p(db, insertSql, {
-				$address: that.address,
-				$website: that.website,
-				$cookiesJson: JSON.stringify(that.cookies)
-			});
-		})
-		.fin(function() {
-			db.close();
-		});
+		var insertParams = {
+			$address: that.address,
+			$website: that.website,
+			$cookiesJson: JSON.stringify(that.cookies)
+		};
+
+		return sequence([
+			function() { return sqlite3.run_p(db, createSql); },
+			function() { return sqlite3.run_p(db, insertSql, insertParams); }
+		]).ensure(function() { db.close(); });
 	});
 };
 
 TempEmail.load = function(emailAddress) {
 	return sqlite3.newDatabase_p()
 	.then(function(db) {
-		var selectSql = 'select * from email where address = $emailAddress';
-		return sqlite3.all_p(db, selectSql, { $emailAddress: emailAddress})
+		var selectSql = 'select * from email where address = $address';
+		return sqlite3.all_p(db, selectSql, { $address: emailAddress})
 		.then(function(rows) {
-			if (rows.length === 0) {
-				throw new Error('Email address does not exist in the database');
-			}
-			return Q.fcall(function() {
-				return new TempEmail(
-					rows[0].website, rows[0].address,
-					JSON.parse(rows[0].cookiesJson));
-			});
+			return (rows.length === 0) ?
+				when.reject(
+					new Error('Email address does not exist in sqlite')) :
+				when.resolve(new TempEmail(rows[0].website, rows[0].address,
+					JSON.parse(rows[0].cookiesJson)));
 		})
-		.fin(function() {
+		.ensure(function() {
 			db.close();
 		});
-	})
+	});
 };
 
 TempEmail.prototype.toString = function() {

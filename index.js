@@ -35,12 +35,16 @@ var main = function() {
 		// create a new email
 		provider.newTempEmail(provider).then(function(tempEmail) {
 			exit(null, tempEmail.getAddress());
-		}).done();
+		}).otherwise(function(error) {
+			exit(error);
+		})
 	} else {
 		// fetch the inbox
 		provider.readEmailAddress(emailAddress).then(function(inbox) {
 			exit(null, inbox);
-		}).done();
+		}).otherwise(function(error) {
+			exit(error);
+		})
 	}
 }
 
